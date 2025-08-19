@@ -1,3 +1,4 @@
+import os
 from tensorflow import keras
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
@@ -7,8 +8,9 @@ import io
 
 
 # Load the pre-trained model
-model_path = "../models/poultry_disease_classifier.keras"
-model = keras.models.load_model(model_path)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR,"../models/poultry_disease_classifier.keras")
+model = keras.models.load_model(MODEL_PATH)
 
 # Class names for the model predictions
 class_labels = ["cocci","healthy","ncd","salmo"]
@@ -39,7 +41,7 @@ async def predict(file: UploadFile = File(...)):
         confidence = float(np.max(predictions))  # Get the confidence of the prediction
         # Return the prediction result
         return JSONResponse(
-                            {predicted_class: "predicted_class",
+                            {"predicted_class": predicted_class,
                              "confidence": round(confidence,2)
                              })
     except Exception as e:
