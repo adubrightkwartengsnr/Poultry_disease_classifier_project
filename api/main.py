@@ -1,18 +1,23 @@
 import os
 import io
 import uvicorn
+import requests
 from tensorflow import keras
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
 from PIL import Image
 import numpy as np
+from huggingface_hub import hf_hub_download
 
 
 
-# Load the pre-trained model
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(BASE_DIR,"../models/poultry_disease_classifier.keras")
-model = keras.models.load_model(MODEL_PATH)
+# Load the pre-trained model from huggingface_hub
+model_path = hf_hub_download(
+    repo_id = "alphagoal/Poultry_disease_prediction_model",
+    filename = "poultry_disease_classifier.keras",
+)
+
+model = keras.models.load_model(model_path)
 
 # Class names for the model predictions
 class_labels = ["cocci","healthy","ncd","salmo"]
