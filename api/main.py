@@ -1,10 +1,12 @@
 import os
+import io
+import uvicorn
 from tensorflow import keras
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
 from PIL import Image
 import numpy as np
-import io
+
 
 
 # Load the pre-trained model
@@ -49,3 +51,7 @@ async def predict(file: UploadFile = File(...)):
             status_code=500,
             content={"error": str(e)}
         )
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("api.main:app", host="0.0.0.0", port=port, reload=True)
